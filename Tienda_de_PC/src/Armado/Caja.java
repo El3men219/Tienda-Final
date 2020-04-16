@@ -61,6 +61,40 @@ public class Caja extends javax.swing.JFrame {
           JOptionPane.showMessageDialog(null, "Error"+ex );
          }
     }
+     void FiltradorMarca(String Valor)
+    {
+        con = new Conexion();
+        Connection reg = con.getConnection();
+        DefaultTableModel modelo = (DefaultTableModel) Table1.getModel();
+        modelo.getDataVector().clear();
+        ResultSet st,kd,rt;
+        Statement cn,dk,tr;
+        
+        try
+        {
+          tr = reg.createStatement();
+          rt =tr.executeQuery("SELECT `Id` FROM `tipoarticulo` WHERE `Descripcion` = 'Caja'");
+          rt.next();
+         cn = reg.createStatement();
+         st =cn.executeQuery("SELECT * FROM `articulo` WHERE `IdTipoArticulo`='"+rt.getString(1)+"' AND `Descripcion` LIKE '%"+ Valor +"%' order by `Descripcion` desc limit 500");
+          while(st.next())
+          {
+                Vector v = new Vector();
+                v.add(st.getInt(1));
+                v.add(st.getString(3));
+                dk = reg.createStatement();
+                kd = dk.executeQuery("SELECT  `Descripcion` FROM `tipoarticulo` WHERE `Id`='"+st.getString(2)+"'");
+                kd.next();
+                v.add(kd.getString(1));
+                modelo.addRow(v);
+                Table1.setModel(modelo);
+         }
+        }
+        catch (SQLException e)
+        {
+            
+        }
+    }
      void TraerCombo()
      {
          TraerTamaño_PlacaBase();
@@ -447,6 +481,12 @@ public class Caja extends javax.swing.JFrame {
             }
         });
 
+        TxtDescripcion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                TxtDescripcionKeyReleased(evt);
+            }
+        });
+
         BtInserta.setText("Insertar");
         BtInserta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -650,26 +690,28 @@ public class Caja extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel3)
-                    .addComponent(TxtModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ComboTamañoFuente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ComboTamañoCaja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel8)
-                        .addComponent(ComboLongitudGpu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(ComboLongitudGpu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel6)
+                        .addComponent(jLabel5)
+                        .addComponent(jLabel3)
+                        .addComponent(TxtModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ComboTamañoFuente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ComboTamañoCaja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(ComboTamañoPlacaBase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel9)
+                        .addComponent(ComboIluminacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel7)
-                        .addComponent(ComboLongitudFuente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
-                            .addComponent(ComboIluminacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(ComboLongitudFuente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(ComboTamañoPlacaBase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BtActualizar)
@@ -711,28 +753,18 @@ public class Caja extends javax.swing.JFrame {
     }//GEN-LAST:event_BtInsertaActionPerformed
 
     private void BtActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtActualizarActionPerformed
-        if(TxtId.getText().equals("")){
+        if(TxtModelo.getText().equals("")){
         JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
-        TxtId.requestFocus(true);
-        TxtId.setBackground(Color.YELLOW);
+        TxtModelo.requestFocus(true);
+        TxtModelo.setBackground(Color.YELLOW);
         return;
         }
         else {
-            TxtId.setBackground(Color.WHITE);
-        }
-        if(TxtDescripcion.getText().equals("")){
-        JOptionPane.showMessageDialog(null, "El campo de Descripcion esta vacio");
-        TxtDescripcion.requestFocus(true);
-        TxtDescripcion.setBackground(Color.YELLOW);
-        return;
-        }
-        else {
-            TxtDescripcion.setBackground(Color.WHITE);
+            TxtModelo.setBackground(Color.WHITE);
         }
     Actualizar();
     Limpiar();
     Traer();
-   
     Desconectar();
     }//GEN-LAST:event_BtActualizarActionPerformed
 
@@ -831,6 +863,10 @@ public class Caja extends javax.swing.JFrame {
     private void ComboIluminacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboIluminacionActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ComboIluminacionActionPerformed
+
+    private void TxtDescripcionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtDescripcionKeyReleased
+        FiltradorMarca(TxtDescripcion.getText());
+    }//GEN-LAST:event_TxtDescripcionKeyReleased
 
     /**
      * @param args the command line arguments

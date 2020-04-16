@@ -1,7 +1,7 @@
 
 package Armado;
 
-
+import Mantenimientos.*;
 import Libre.Conexion;
 import java.awt.Color;
 import java.awt.HeadlessException;
@@ -24,69 +24,51 @@ public class Procesador extends javax.swing.JFrame {
     public Procesador() {
         initComponents();
         this.setLocationRelativeTo(null);
-        TxtDescripcion.requestFocus(true); 
         Traer();
-        cargarcombos();
-        TraerProcesadores();
+        TraerArticulo();
+        cargarCombo();
     }
     
     Conexion con;
-  
-        
-    void selectTable()
+    void cargarCombo()
     {
-     try{
-     
-        int fila = Table2.getSelectedRow();
-       if(fila >=0)
-       {
-           TxtId.setText(Table2.getValueAt(fila, 0).toString());
-           
-       }
-
-       }catch (HeadlessException ex){
-
-             JOptionPane.showMessageDialog(null, "Error: "+ex+"\nInténtelo nuevamente", " .::Error En la Operacion::." ,JOptionPane.ERROR_MESSAGE);
-
-       }     
-    }
-        void TraerProcesadores()
+        TraerFrecuencia();
+        TraerNucleo();
+        TraerZocalo();
+        TraerHilos();
+        TraerTDP();
+     }
+        void TraerArticulo()
     {
        con = new Conexion();
        Connection reg = con.getConnection();
-       ResultSet st;
-       Statement cn;
-       DefaultTableModel modelo = (DefaultTableModel) Table2.getModel();
+       ResultSet st,nm;
+       Statement cn,mn;
+       DefaultTableModel modelo = (DefaultTableModel) Table1.getModel();
        modelo.getDataVector().clear();
-      try
+       int Id=0;
+        try
          {
         cn = reg.createStatement();
-        st =cn.executeQuery("SELECT `Id`, `Descripcion`, `IdEstadoArticulo` FROM `articulo` WHERE `IdTipoArticulo` =10");
-         while(st.next())
-          {
-                Vector v = new Vector();
-               
-                v.add(st.getString(1));//Id
-                v.add(st.getString(2));//Marca
-                modelo.addRow(v);
-                Table2.setModel(modelo);
-          }
-        }
-        catch (SQLException e)
+        st =cn.executeQuery("SELECT `Id` FROM `tipoarticulo` WHERE `Descripcion` = 'Procesador'");
+        st.next();
+        mn= reg.createStatement();
+        nm= mn.executeQuery("SELECT `Id`,`Descripcion` FROM `articulo` WHERE `IdTipoArticulo`='"+st.getString(1)+"'");
+      while(nm.next())
         {
-         JOptionPane.showMessageDialog(null, "Error"+e );
+           Vector v = new Vector();
+           v.add(nm.getInt(1));
+           v.add(nm.getString(2));
+           modelo.addRow(v);
+           Table1.setModel(modelo);
         }
+        TxtModelo.requestFocus(true);
+         }catch(SQLException ex)
+         {
+          JOptionPane.showMessageDialog(null, "Error"+ex );
+         }
     }
-    void cargarcombos()
-    {
-        TraerHilos();
-        TraerFrecuencia();
-        TraerNucleo();
-        TraerHilos();
-        TraerZocalo();
-        TraerTDP();
-    }
-         void TraerFrecuencia()
+     void TraerFrecuencia()
     {
         con = new Conexion();
         Connection reg = con.getConnection();
@@ -96,7 +78,7 @@ public class Procesador extends javax.swing.JFrame {
        try
         {
          cn = reg.createStatement();
-         st =cn.executeQuery("SELECT * FROM `frecuencia` order by Id ASC limit 500");
+         st =cn.executeQuery("SELECT * FROM `Frecuencia` order by Id ASC limit 500");
          ComboFrecuencia.removeAllItems();
           while(st.next())
           {
@@ -108,7 +90,7 @@ public class Procesador extends javax.swing.JFrame {
          JOptionPane.showMessageDialog(null, "Error"+e );
         }
     }
-    void TraerNucleo()
+     void TraerNucleo()
     {
         con = new Conexion();
         Connection reg = con.getConnection();
@@ -118,7 +100,7 @@ public class Procesador extends javax.swing.JFrame {
        try
         {
          cn = reg.createStatement();
-         st =cn.executeQuery("SELECT * FROM `nucleo` order by Id ASC limit 500");
+         st =cn.executeQuery("SELECT * FROM `Nucleo` order by Id ASC limit 500");
          ComboNucleo.removeAllItems();
           while(st.next())
           {
@@ -140,11 +122,11 @@ public class Procesador extends javax.swing.JFrame {
        try
         {
          cn = reg.createStatement();
-         st =cn.executeQuery("SELECT * FROM `hilos` order by Id ASC limit 500");
-         ComboHilos.removeAllItems();
+         st =cn.executeQuery("SELECT * FROM `Hilos` order by Id ASC limit 500");
+         ComboHilo.removeAllItems();
           while(st.next())
           {
-             ComboHilos.addItem(st.getString(2));
+             ComboHilo.addItem(st.getString(2));
          }
         }
         catch (SQLException e)
@@ -152,7 +134,7 @@ public class Procesador extends javax.swing.JFrame {
          JOptionPane.showMessageDialog(null, "Error"+e );
         }
     }
-    void TraerZocalo()
+     void TraerZocalo()
     {
         con = new Conexion();
         Connection reg = con.getConnection();
@@ -162,11 +144,11 @@ public class Procesador extends javax.swing.JFrame {
        try
         {
          cn = reg.createStatement();
-         st =cn.executeQuery("SELECT * FROM `zocalo` order by Id ASC limit 500");
-         ComboZocalos.removeAllItems();
+         st =cn.executeQuery("SELECT * FROM `Zocalo` order by Id ASC limit 500");
+         ComboZocalo.removeAllItems();
           while(st.next())
           {
-             ComboZocalos.addItem(st.getString(2));
+             ComboZocalo.addItem(st.getString(2));
          }
         }
         catch (SQLException e)
@@ -184,11 +166,11 @@ public class Procesador extends javax.swing.JFrame {
        try
         {
          cn = reg.createStatement();
-         st =cn.executeQuery("SELECT * FROM `voltajes` order by Id ASC limit 500");
-         ComboVoltaje.removeAllItems();
+         st =cn.executeQuery("SELECT * FROM `Voltajes` order by Id ASC limit 500");
+         ComboTDP.removeAllItems();
           while(st.next())
           {
-             ComboVoltaje.addItem(st.getString(2));
+             ComboTDP.addItem(st.getString(2));
          }
         }
         catch (SQLException e)
@@ -196,51 +178,68 @@ public class Procesador extends javax.swing.JFrame {
          JOptionPane.showMessageDialog(null, "Error"+e );
         }
     }
+              
+    void selectTable()
+    {
+     try{
+     
+        int fila = Table1.getSelectedRow();
+       if(fila >=0)
+       {
+           TxtId.setText(Table1.getValueAt(fila, 0).toString());
+           TxtDescripcion.setText(Table1.getValueAt(fila, 1).toString());
+       }
+          TxtModelo.requestFocus(true);
+       }catch (HeadlessException ex){
+
+             JOptionPane.showMessageDialog(null, "Error: "+ex+"\nInténtelo nuevamente", " .::Error En la Operacion::." ,JOptionPane.ERROR_MESSAGE);
+
+       }     
+    }
     void Traer()
     {
-       con = new Conexion();
-       Connection reg = con.getConnection();
-       ResultSet st,mw,kl,sa,ds,wd,er;
-       Statement cn,lk,jh,as,sd,dw,re;
-       DefaultTableModel modelo = (DefaultTableModel) Table1.getModel();
-       modelo.getDataVector().clear();
-      try
-         {
-        cn = reg.createStatement();
-        st =cn.executeQuery("SELECT `Id`, `Descripcion`, `Frecuencia`, `Nucleo`, `Hilos`, `Zocalo`, `Voltajes` FROM `procesador` ");
-         while(st.next())
+        con = new Conexion();
+        Connection reg = con.getConnection();
+        DefaultTableModel modelo = (DefaultTableModel) Table2.getModel();
+        modelo.getDataVector().clear();
+        ResultSet st,lk,mw,nm,as,gf,hj,ew,cv;
+        Statement cn,kl,wm,mn,sa,fg,jh,we,vc;
+       try
+        {
+         cn = reg.createStatement();
+         st =cn.executeQuery("SELECT * FROM `Procesador` order by id ASC limit 500");
+          while(st.next())
           {
                 Vector v = new Vector();
-                
-                lk = reg.createStatement();//Marca
-                mw =lk.executeQuery("SELECT `Id`, `IdTipoArticulo`, `Descripcion`, `IdEstadoArticulo` FROM `articulo` WHERE `Id`='"+st.getInt(1)+"'  ");
+                kl= reg.createStatement();//marca 
+                lk= kl.executeQuery("SELECT `Id`,`Descripcion` FROM `articulo` WHERE `Id` ='"+st.getString(1)+"' ");
+                lk.next();
+                wm= reg.createStatement();//Frecuencia
+                mw= wm.executeQuery("SELECT  `Descripcion` FROM `Frecuencia` WHERE `Id`='"+st.getString(3)+"'");
                 mw.next();
-                jh = reg.createStatement();//Frecuencia
-                kl =jh.executeQuery("SELECT `Descripcion` FROM `frecuencia` WHERE `Id`='"+st.getString(3)+"'");
-                kl.next();
-                sd = reg.createStatement();//Nucleo
-                ds =sd.executeQuery("SELECT `Descripcion` FROM `nucleo` WHERE `Id`='"+st.getString(4)+"'");
-                ds.next();
-                as = reg.createStatement();//Hilos
-                sa =as.executeQuery("SELECT `Descripcion` FROM `hilos` WHERE `Id`='"+st.getString(5)+"'");
-                sa.next();
-                dw = reg.createStatement();//Zocalo
-                wd =dw.executeQuery("SELECT `Descripcion` FROM `Zocalo` WHERE `Id`='"+st.getString(5)+"'");
-                wd.next();
-                re = reg.createStatement();//Voltajes
-                er =re.executeQuery("SELECT `Descripcion` FROM `Voltaje` WHERE `Id`='"+st.getString(5)+"'");
-                er.next();
-                v.add(st.getString(1));//Id
-                v.add(mw.getString(3));//Marca
-                v.add(st.getString(2));//Modelo
-                v.add(kl.getString(1));//Frecuencia
-                v.add(ds.getString(1));//Nucleo
-                v.add(sa.getString(1));//Hilos
-                v.add(wd.getString(1));//Zocalo
-                v.add(er.getString(1));//Voltajes
+                mn= reg.createStatement();//Nucleo
+                nm= mn.executeQuery("SELECT  `Descripcion` FROM `Nucleo` WHERE `Id`='"+st.getString(4)+"'");
+                nm.next();
+                sa= reg.createStatement();//Hilos
+                as= sa.executeQuery("SELECT  `Descripcion` FROM `Hilos` WHERE `Id`='"+st.getString(5)+"'");
+                as.next();
+                fg= reg.createStatement();//Zocalo
+                gf= fg.executeQuery("SELECT  `Descripcion` FROM `Zocalo` WHERE `Id`='"+st.getString(6)+"'");
+                gf.next();
+                jh= reg.createStatement();//Voltajes
+                hj= jh.executeQuery("SELECT  `Descripcion` FROM `Voltajes` WHERE `Id`='"+st.getString(7)+"'");
+                hj.next();
+                v.add(lk.getInt(1));//id
+                v.add(lk.getString(2));//marca
+                v.add(st.getString(2));//modelo
+                v.add(mw.getString(1));//Frecuencia
+                v.add(nm.getString(1));//Nucleo
+                v.add(as.getString(1));//Hilos   
+                v.add(gf.getString(1));//Zocalo   
+                v.add(hj.getString(1));//Voltaje
                 modelo.addRow(v);
-                Table1.setModel(modelo);
-          }
+                Table2.setModel(modelo);
+         }
         }
         catch (SQLException e)
         {
@@ -252,47 +251,44 @@ public class Procesador extends javax.swing.JFrame {
     {
        con = new Conexion();
        Connection reg = con.getConnection();
-       ResultSet st,mw,kl,sa,ds;
-       Statement cn,lk,jh,as,sd;
-       int Fre=0,Nu=0,Hi=0,Zo=0,Vol=0;
-       String Frecuencia="",Nucleo="",Hilo="",Zocalo="",Voltaje="";
-       Frecuencia = ComboFrecuencia.getSelectedItem().toString();
-       Nucleo = ComboNucleo.getSelectedItem().toString();
-       Hilo = ComboHilos.getSelectedItem().toString();
-       Zocalo = ComboZocalos.getSelectedItem().toString();
-       Voltaje = ComboVoltaje.getSelectedItem().toString();
-      
+        ResultSet st,lk,sa,rt,gf,we,qw;
+        Statement cn,kl,as,tr,fg,ew,wq;
+        int Fe=0,TP=0,Zo=0,Hi=0,Nu=0;
+         String Frecuencia="",TDP="",Zocalo="",Hilos="",Nucleo="";
+         Hilos=ComboHilo.getSelectedItem().toString();
+         TDP=ComboTDP.getSelectedItem().toString();
+         Zocalo=ComboZocalo.getSelectedItem().toString();
+         Frecuencia=ComboFrecuencia.getSelectedItem().toString();
+         Nucleo=ComboNucleo.getSelectedItem().toString();
+
         try
-         {        
-        cn = reg.createStatement();//Frecuencia
-        st =cn.executeQuery("SELECT `Id` FROM `frecuencia` WHERE `Descripcion`='"+Frecuencia+"' ");
-         while(st.next())
+         {
+         cn = reg.createStatement();//Frecuencia
+         st =cn.executeQuery("SELECT `Id` FROM `Frecuencia` WHERE  `Descripcion`='"+Frecuencia+"' ");
+          while(st.next())
           {
-                Vector v = new Vector();
-                
-                lk = reg.createStatement();//Nucleo
-                mw =lk.executeQuery("SELECT `Id` FROM `frecuencia` WHERE `Descripcion`='"+Nucleo+"'  ");
-                mw.next();
-                jh = reg.createStatement();//Hilos
-                kl =jh.executeQuery("SELECT `Id` FROM `frecuencia` WHERE `Descripcion`='"+Hilo+"'  ");
-                kl.next();
-                sd = reg.createStatement();//Zocalo
-                ds =sd.executeQuery("SELECT `Id` FROM `frecuencia` WHERE `Descripcion`='"+Zocalo+"'  ");
-                ds.next();
-                as = reg.createStatement();//Voltaje
-                sa =as.executeQuery("SELECT `Id` FROM `frecuencia` WHERE `Descripcion`='"+Voltaje+"'  ");
-                sa.next();
-                Fre= Integer.parseInt(st.getString(1));
-                Nu= Integer.parseInt(mw.getString(1));
-                Hi= Integer.parseInt(kl.getString(1));
-                Zo= Integer.parseInt(ds.getString(1));
-                Vol= Integer.parseInt(sa.getString(1));
-                
-          }
-           PreparedStatement ps = reg.prepareStatement("INSERT INTO `procesador`(`Id`, `Descripcion`, `Frecuencia`, `Nucleo`, `Hilos`, `Zocalo`, `Voltajes`) VALUES ('"+TxtId.getText()+"','"+TxtDescripcion.getText()+"','"+Fre+"','"+Nu+"','"+Hi+"','"+Zo+"','"+Vol+"')");
+              kl= reg.createStatement();//Nucleo
+              lk= kl.executeQuery("SELECT `Id`  FROM `Nucleo` WHERE `Descripcion`='"+Nucleo+"'");
+              lk.next();
+              as= reg.createStatement();//Hilo
+              sa= as.executeQuery("SELECT `Id`  FROM `Hilos` WHERE `Descripcion`='"+Hilos+"'");
+              sa.next();
+              tr= reg.createStatement();//Zocalo
+              rt= tr.executeQuery("SELECT `Id`  FROM `Zocalo` WHERE `Descripcion`='"+Zocalo+"'");
+              rt.next();
+              fg= reg.createStatement();//TDP
+              gf= fg.executeQuery("SELECT `Id`  FROM `Voltajes` WHERE `Descripcion`='"+TDP+"'");
+              gf.next();
+              Fe=Integer.parseInt(st.getString(1));//Frecuencia
+              Nu=Integer.parseInt(lk.getString(1));//Nucleo
+              Hi=Integer.parseInt(sa.getString(1));//Hilos
+              Zo=Integer.parseInt(rt.getString(1));//Zocalo
+              TP=Integer.parseInt(gf.getString(1));//TDP 
+              }
+           PreparedStatement ps = reg.prepareStatement("INSERT INTO `Procesador`(`Id`, `Descripcion`, `Frecuencia`, `Nucleo`, `Hilos`, `Zocalo`, `Voltajes`) VALUES ('"+TxtId.getText()+"','"+TxtModelo.getText()+"','"+Fe+"','"+Nu+"','"+Hi+"','"+Zo+"','"+TP+"')");
            ps.executeUpdate();
             TxtDescripcion.setEditable(true);
-           JOptionPane.showMessageDialog(null, "Nuevo Procesador agregado" );
+           JOptionPane.showMessageDialog(null, "Procesador agregado" );
          }catch(SQLException ex)
          {
           JOptionPane.showMessageDialog(null, "Error"+ex );
@@ -303,11 +299,43 @@ public class Procesador extends javax.swing.JFrame {
     {
        con = new Conexion();
        Connection reg = con.getConnection();
-       try
+        ResultSet st,lk,sa,rt,gf,we,qw;
+        Statement cn,kl,as,tr,fg,ew,wq;
+        int Fe=0,TP=0,Zo=0,Hi=0,Nu=0;
+         String Frecuencia="",TDP="",Zocalo="",Hilos="",Nucleo="";
+         Hilos=ComboHilo.getSelectedItem().toString();
+         TDP=ComboTDP.getSelectedItem().toString();
+         Zocalo=ComboZocalo.getSelectedItem().toString();
+         Frecuencia=ComboFrecuencia.getSelectedItem().toString();
+         Nucleo=ComboNucleo.getSelectedItem().toString();
+
+        try
          {
-        PreparedStatement ps = reg.prepareStatement("UPDATE `Chipset`  SET `Descripcion` = '"+TxtDescripcion.getText()+"' WHERE `unidad_medida`.`Id` ='"+TxtId.getText()+"'");
+         cn = reg.createStatement();//Frecuencia
+         st =cn.executeQuery("SELECT `Id` FROM `Frecuencia` WHERE  `Descripcion`='"+Frecuencia+"' ");
+          while(st.next())
+          {
+              kl= reg.createStatement();//Nucleo
+              lk= kl.executeQuery("SELECT `Id`  FROM `Nucleo` WHERE `Descripcion`='"+Nucleo+"'");
+              lk.next();
+              as= reg.createStatement();//Hilo
+              sa= as.executeQuery("SELECT `Id`  FROM `Hilos` WHERE `Descripcion`='"+Hilos+"'");
+              sa.next();
+              tr= reg.createStatement();//Zocalo
+              rt= tr.executeQuery("SELECT `Id`  FROM `Zocalo` WHERE `Descripcion`='"+Zocalo+"'");
+              rt.next();
+              fg= reg.createStatement();//TDP
+              gf= fg.executeQuery("SELECT `Id`  FROM `Voltajes` WHERE `Descripcion`='"+TDP+"'");
+              gf.next();
+              Fe=Integer.parseInt(st.getString(1));//Frecuencia
+              Nu=Integer.parseInt(lk.getString(1));//Nucleo
+              Hi=Integer.parseInt(sa.getString(1));//Hilos
+              Zo=Integer.parseInt(rt.getString(1));//Zocalo
+              TP=Integer.parseInt(gf.getString(1));//TDP 
+              }
+        PreparedStatement ps = reg.prepareStatement("UPDATE `Procesador` SET `Frecuencia`='"+Fe+"',`Nucleo`='"+Nu+"',`Hilos`='"+Hi+"',`Zocalo`='"+Zo+"',`Voltajes`='"+TP+"'  WHERE `Procesador`.`Descripcion`='"+TxtModelo.getText()+"'");
         ps.executeUpdate();
-        JOptionPane.showMessageDialog(null, "Chipset modificado");
+        JOptionPane.showMessageDialog(null, "Procesador modificado");
           }catch(SQLException ex){
           JOptionPane.showMessageDialog(null, "Error"+ex );
          }
@@ -319,9 +347,9 @@ public class Procesador extends javax.swing.JFrame {
        Connection reg = con.getConnection();
        try
          {
-        PreparedStatement ps = reg.prepareStatement("DELETE FROM `Chipset`  WHERE  Id='"+TxtId.getText()+"'");
+        PreparedStatement ps = reg.prepareStatement("DELETE FROM `Procesador`  WHERE  `Descripcion` ='"+TxtModelo.getText()+"'");
         ps.executeUpdate();
-        JOptionPane.showMessageDialog(null, "Chipset Eliminado");
+        JOptionPane.showMessageDialog(null, "Procesador Eliminado");
           }catch(SQLException ex){
           JOptionPane.showMessageDialog(null, "Error"+ex );
          }
@@ -331,7 +359,8 @@ public class Procesador extends javax.swing.JFrame {
     {
         TxtId.setText("");
         TxtDescripcion.setText("");
-        TxtDescripcion.requestFocus(true);
+        TxtModelo.setText("");
+        TxtModelo.requestFocus(true);
         TxtId.setBackground(Color.WHITE);
         TxtDescripcion.setBackground(Color.WHITE);
         JOptionPane.showMessageDialog(null, "Los campos has sido limpiardo");
@@ -342,31 +371,7 @@ public class Procesador extends javax.swing.JFrame {
          con.desconectar();
     }
     
-    void Cargardatos()
-    {
-        con = new Conexion();
-        Connection reg = con.getConnection();
-        ResultSet st;
-        Statement cn;
-        
-       try
-        {
-         cn = reg.createStatement();
-         st =cn.executeQuery("SELECT `Descripcion` FROM `Chipset` WHERE id='"+TxtId.getText()+"' ");
-          while(st.next())
-          {
-            TxtDescripcion.setText(st.getString(1));   
-             JOptionPane.showMessageDialog(null, "Este id ya existe " );
-             TxtId.requestFocus(true);
-             
-          }
-        }
-        catch (SQLException e)
-        {
-         JOptionPane.showMessageDialog(null, "Error"+e );
-        }
-        
-    }
+
     
 
     /**
@@ -388,19 +393,21 @@ public class Procesador extends javax.swing.JFrame {
         BtMenu = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         Table1 = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        Table2 = new javax.swing.JTable();
+        TxtModelo = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         ComboFrecuencia = new javax.swing.JComboBox<>();
-        ComboHilos = new javax.swing.JComboBox<>();
         ComboNucleo = new javax.swing.JComboBox<>();
-        ComboZocalos = new javax.swing.JComboBox<>();
-        ComboVoltaje = new javax.swing.JComboBox<>();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        Table2 = new javax.swing.JTable();
-        BtActualizar1 = new javax.swing.JButton();
+        ComboHilo = new javax.swing.JComboBox<>();
+        BtBuscar = new javax.swing.JButton();
+        ComboZocalo = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        ComboTDP = new javax.swing.JComboBox<>();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -408,7 +415,7 @@ public class Procesador extends javax.swing.JFrame {
         jLabel1.setText("Id: ");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel2.setText("Modelo:");
+        jLabel2.setText("Marca:");
 
         TxtId.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -449,7 +456,7 @@ public class Procesador extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Id", "Marca", "Modelo", "Frecuencias", "Nucleo", "Hilos", "Zocalo", "TDP"
+                "Id", "Modelo"
             }
         ));
         Table1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -462,162 +469,187 @@ public class Procesador extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(Table1);
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel3.setText("Frecuencia:");
-
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel4.setText("Nucleos:");
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel5.setText("Hilos:");
-
-        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel6.setText("Zocalos:");
-
-        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel7.setText("TDP:");
-
-        ComboFrecuencia.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        ComboHilos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        ComboNucleo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        ComboZocalos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        ComboVoltaje.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         Table2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Id", "Marca"
+                "Id", "Marca", "Modelo", "Frecuencia", "Nucleo", "Hilo", "Zocalo", "TDP"
             }
         ));
         Table2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 Table2MouseClicked(evt);
             }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                Table2MousePressed(evt);
+            }
         });
         jScrollPane2.setViewportView(Table2);
 
-        BtActualizar1.setText("Buscar");
-        BtActualizar1.addActionListener(new java.awt.event.ActionListener() {
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel3.setText("Modelo:");
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel4.setText("Frecuencia:");
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel5.setText("Nucleo:");
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel6.setText("Hilos:");
+
+        ComboFrecuencia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtActualizar1ActionPerformed(evt);
+                ComboFrecuenciaActionPerformed(evt);
             }
         });
+
+        ComboNucleo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboNucleoActionPerformed(evt);
+            }
+        });
+
+        ComboHilo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboHiloActionPerformed(evt);
+            }
+        });
+
+        BtBuscar.setText("Buscar");
+        BtBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtBuscarActionPerformed(evt);
+            }
+        });
+
+        ComboZocalo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboZocaloActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel7.setText("Zocalo:");
+
+        ComboTDP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboTDPActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel8.setText("TDP:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(TxtId, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(TxtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(16, 16, 16)
+                        .addComponent(BtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(TxtModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ComboFrecuencia, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 577, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(TxtId, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(BtActualizar1, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 15, Short.MAX_VALUE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGap(74, 74, 74)
+                                .addComponent(BtInserta, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(TxtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
+                                .addContainerGap()
+                                .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ComboFrecuencia, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(ComboNucleo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(10, 10, 10)
+                                .addComponent(ComboZocalo, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(37, 37, 37)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(BtActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(47, 47, 47)
+                                        .addComponent(BtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(47, 47, 47)
+                                        .addComponent(BtEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(ComboTDP, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(338, 338, 338)
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(ComboHilos, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(ComboNucleo, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ComboZocalos, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(ComboVoltaje, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(BtInserta, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(BtActualizar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                                .addComponent(ComboHilo, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(52, 52, 52))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(BtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(BtEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(jScrollPane2)
+                            .addComponent(jScrollPane1))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(TxtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(TxtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BtBuscar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3)
+                    .addComponent(TxtModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ComboFrecuencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ComboNucleo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ComboHilo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(BtActualizar)
-                                    .addComponent(BtMenu))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(BtInserta)
-                                    .addComponent(BtEliminar)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(23, 23, 23)
-                                        .addComponent(ComboZocalos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel5)
-                                            .addComponent(ComboHilos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel6)))
-                                .addGap(9, 9, 9)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel7)
-                                    .addComponent(ComboVoltaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4)
-                                    .addComponent(ComboNucleo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(142, 142, 142))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel2)
-                                .addComponent(TxtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel1)
-                                .addComponent(TxtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(BtActualizar1)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel3)
-                                    .addComponent(ComboFrecuencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel8)
+                        .addComponent(ComboTDP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel7)
+                        .addComponent(ComboZocalo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BtActualizar)
+                    .addComponent(BtInserta)
+                    .addComponent(BtMenu)
+                    .addComponent(BtEliminar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -645,33 +677,24 @@ public class Procesador extends javax.swing.JFrame {
     Insertar();
     Limpiar();
     Traer();
+   
     Desconectar();
    
     }//GEN-LAST:event_BtInsertaActionPerformed
 
     private void BtActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtActualizarActionPerformed
-        if(TxtId.getText().equals("")){
+        if(TxtModelo.getText().equals("")){
         JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
-        TxtId.requestFocus(true);
-        TxtId.setBackground(Color.YELLOW);
+        TxtModelo.requestFocus(true);
+        TxtModelo.setBackground(Color.YELLOW);
         return;
         }
         else {
-            TxtId.setBackground(Color.WHITE);
-        }
-        if(TxtDescripcion.getText().equals("")){
-        JOptionPane.showMessageDialog(null, "El campo de Descripcion esta vacio");
-        TxtDescripcion.requestFocus(true);
-        TxtDescripcion.setBackground(Color.YELLOW);
-        return;
-        }
-        else {
-            TxtDescripcion.setBackground(Color.WHITE);
+            TxtModelo.setBackground(Color.WHITE);
         }
     Actualizar();
     Limpiar();
     Traer();
-  
     Desconectar();
     }//GEN-LAST:event_BtActualizarActionPerformed
 
@@ -686,8 +709,7 @@ public class Procesador extends javax.swing.JFrame {
             TxtId.setBackground(Color.WHITE);
         }
         TxtDescripcion.requestFocus(true);  
-        Cargardatos();
-        Desconectar();
+        
     }//GEN-LAST:event_TxtIdActionPerformed
 
     private void TxtIdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtIdKeyReleased
@@ -724,12 +746,12 @@ public class Procesador extends javax.swing.JFrame {
     Eliminar();
     Limpiar();
     Traer();
-    
+ 
     Desconectar();
     }//GEN-LAST:event_BtEliminarActionPerformed
 
     private void Table1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Table1MouseClicked
-     
+      selectTable();
         
     }//GEN-LAST:event_Table1MouseClicked
 
@@ -737,13 +759,37 @@ public class Procesador extends javax.swing.JFrame {
 
     }//GEN-LAST:event_Table1MousePressed
 
-    private void BtActualizar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtActualizar1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BtActualizar1ActionPerformed
-
     private void Table2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Table2MouseClicked
-        selectTable();
+        // TODO add your handling code here:
     }//GEN-LAST:event_Table2MouseClicked
+
+    private void Table2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Table2MousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Table2MousePressed
+
+    private void ComboFrecuenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboFrecuenciaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboFrecuenciaActionPerformed
+
+    private void ComboNucleoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboNucleoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboNucleoActionPerformed
+
+    private void ComboHiloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboHiloActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboHiloActionPerformed
+
+    private void BtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtBuscarActionPerformed
+
+    private void ComboZocaloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboZocaloActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboZocaloActionPerformed
+
+    private void ComboTDPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboTDPActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboTDPActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1026,6 +1072,262 @@ public class Procesador extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -1037,19 +1339,20 @@ public class Procesador extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtActualizar;
-    private javax.swing.JButton BtActualizar1;
+    private javax.swing.JButton BtBuscar;
     private javax.swing.JButton BtEliminar;
     private javax.swing.JButton BtInserta;
     private javax.swing.JButton BtMenu;
     private javax.swing.JComboBox<String> ComboFrecuencia;
-    private javax.swing.JComboBox<String> ComboHilos;
+    private javax.swing.JComboBox<String> ComboHilo;
     private javax.swing.JComboBox<String> ComboNucleo;
-    private javax.swing.JComboBox<String> ComboVoltaje;
-    private javax.swing.JComboBox<String> ComboZocalos;
+    private javax.swing.JComboBox<String> ComboTDP;
+    private javax.swing.JComboBox<String> ComboZocalo;
     private javax.swing.JTable Table1;
     private javax.swing.JTable Table2;
     private javax.swing.JTextField TxtDescripcion;
     private javax.swing.JTextField TxtId;
+    private javax.swing.JTextField TxtModelo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1057,6 +1360,7 @@ public class Procesador extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables

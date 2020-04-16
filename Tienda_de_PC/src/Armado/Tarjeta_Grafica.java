@@ -269,33 +269,47 @@ public class Tarjeta_Grafica extends javax.swing.JFrame {
     {
        con = new Conexion();
        Connection reg = con.getConnection();
-        ResultSet st,lk,sa;
-        Statement cn,kl,as;
-        int Ti=0,Ve=0,Ca=0;
-         String Tipo="",Velocidad="",Capacidad="";
-         Tipo=ComboIluminacion.getSelectedItem().toString();
-         Velocidad=ComboVram.getSelectedItem().toString();
-         Capacidad=ComboFrecuenciaN.getSelectedItem().toString();
+        ResultSet st,lk,sa,sd,hj,yu;
+        Statement cn,kl,as,ds,jh,uy;
+        int Il=0,VR=0,FeN=0,FeM=0,Ta=0,Vo=0;
+         String Iluminacion="",Vram="",FrecuenciaN="",FrecuenciaM="",Tamaño="",Voltaje="";
+         Iluminacion=ComboIluminacion.getSelectedItem().toString();
+         Vram=ComboVram.getSelectedItem().toString();
+         FrecuenciaN=ComboFrecuenciaN.getSelectedItem().toString();
+         FrecuenciaM=ComboFrecuenciaM.getSelectedItem().toString();
+         Tamaño=ComboTamaño.getSelectedItem().toString();
+         Voltaje=ComboVoltaje.getSelectedItem().toString();
         try
          {
          cn = reg.createStatement();
-         st =cn.executeQuery("SELECT `Id` FROM `Tipo_DiscoDuro` WHERE  `Descripcion`='"+Tipo+"' ");
+         st =cn.executeQuery("SELECT `Id` FROM `Iluminacion` WHERE  `Descripcion`='"+Iluminacion+"' ");
           while(st.next())
           {
               kl= reg.createStatement();
-              lk= kl.executeQuery("SELECT `Id`  FROM `Velocidad_Transferencia` WHERE `Descripcion`='"+Velocidad+"'");
+              lk= kl.executeQuery("SELECT `Id`  FROM `Vram` WHERE `Descripcion`='"+Vram+"'");
               lk.next();
               as= reg.createStatement();
-              sa= as.executeQuery("SELECT `Id`  FROM `Capacidad` WHERE `Descripcion`='"+Capacidad+"'");
+              sa= as.executeQuery("SELECT `Id`  FROM `Frecuencia` WHERE `Descripcion`='"+FrecuenciaN+"'");
               sa.next();
-              Ti=Integer.parseInt(st.getString(1));
-              Ve=Integer.parseInt(lk.getString(1));
-              Ca=Integer.parseInt(sa.getString(1));
+              ds= reg.createStatement();
+              sd= ds.executeQuery("SELECT `Id`  FROM `Frecuencia` WHERE `Descripcion`='"+FrecuenciaM+"'");
+              sd.next();
+              jh= reg.createStatement();
+              hj= jh.executeQuery("SELECT `Id`  FROM `Tamaño` WHERE `Descripcion`='"+Tamaño+"'");
+              hj.next();
+              uy= reg.createStatement();
+              yu= uy.executeQuery("SELECT `Id`  FROM `Voltajes` WHERE `Descripcion`='"+Voltaje+"'");
+              yu.next();
+              Il=Integer.parseInt(st.getString(1));
+              VR=Integer.parseInt(lk.getString(1));
+              FeN=Integer.parseInt(sa.getString(1));
+              FeM=Integer.parseInt(sd.getString(1));
+              Ta=Integer.parseInt(hj.getString(1));
+              Vo=Integer.parseInt(yu.getString(1));
           }
-           PreparedStatement ps = reg.prepareStatement("INSERT INTO `disco_duro`(`Id`, `Descripcion`, `Tipo`, `Velocidad`, `Capacidad`) VALUES ('"+TxtId.getText()+"','"+TxtModelo.getText()+"','"+Ti+"','"+Ve+"','"+Ca+"')");
+           PreparedStatement ps = reg.prepareStatement("INSERT INTO `tarjeta_grafica`(`Id`, `Descripcion`, `Iluminacion`, `Vram`, `Frecuencia_Nucleo`, `Frecuencia_Memoria`, `Tamaño`, `Voltaje`) VALUES ('"+TxtId.getText()+"','"+TxtModelo.getText()+"','"+Il+"','"+VR+"','"+FeN+"','"+FeM+"','"+Ta+"','"+Vo+"')");
            ps.executeUpdate();
-            TxtDescripcion.setEditable(true);
-           JOptionPane.showMessageDialog(null, "Disco duro  agregado" );
+           JOptionPane.showMessageDialog(null, "Tarjeta grafica  agregado" );
          }catch(SQLException ex)
          {
           JOptionPane.showMessageDialog(null, "Error"+ex );
@@ -306,32 +320,48 @@ public class Tarjeta_Grafica extends javax.swing.JFrame {
     {
         con = new Conexion();
        Connection reg = con.getConnection();
-        ResultSet st,lk,sa;
-        Statement cn,kl,as;
-        int Ti=0,Ve=0,Ca=0;
-         String Tipo="",Velocidad="",Capacidad="";
-         Tipo=ComboIluminacion.getSelectedItem().toString();
-         Velocidad=ComboVram.getSelectedItem().toString();
-         Capacidad=ComboFrecuenciaN.getSelectedItem().toString();
+        ResultSet st,lk,sa,sd,hj,yu;
+        Statement cn,kl,as,ds,jh,uy;
+        int Il=0,VR=0,FeN=0,FeM=0,Ta=0,Vo=0;
+         String Iluminacion="",Vram="",FrecuenciaN="",FrecuenciaM="",Tamaño="",Voltaje="";
+         Iluminacion=ComboIluminacion.getSelectedItem().toString();
+         Vram=ComboVram.getSelectedItem().toString();
+         FrecuenciaN=ComboFrecuenciaN.getSelectedItem().toString();
+         FrecuenciaM=ComboFrecuenciaM.getSelectedItem().toString();
+         Tamaño=ComboTamaño.getSelectedItem().toString();
+         Voltaje=ComboVoltaje.getSelectedItem().toString();
         try
          {
          cn = reg.createStatement();
-         st =cn.executeQuery("SELECT `Id` FROM `Tipo_DiscoDuro` WHERE  `Descripcion`='"+Tipo+"' ");
+         st =cn.executeQuery("SELECT `Id` FROM `Iluminacion` WHERE  `Descripcion`='"+Iluminacion+"' ");
           while(st.next())
           {
               kl= reg.createStatement();
-              lk= kl.executeQuery("SELECT `Id`  FROM `Velocidad_Transferencia` WHERE `Descripcion`='"+Velocidad+"'");
+              lk= kl.executeQuery("SELECT `Id`  FROM `Vram` WHERE `Descripcion`='"+Vram+"'");
               lk.next();
               as= reg.createStatement();
-              sa= as.executeQuery("SELECT `Id`  FROM `Capacidad` WHERE `Descripcion`='"+Capacidad+"'");
+              sa= as.executeQuery("SELECT `Id`  FROM `Frecuencia` WHERE `Descripcion`='"+FrecuenciaN+"'");
               sa.next();
-              Ti=Integer.parseInt(st.getString(1));
-              Ve=Integer.parseInt(lk.getString(1));
-              Ca=Integer.parseInt(sa.getString(1));
+              ds= reg.createStatement();
+              sd= ds.executeQuery("SELECT `Id`  FROM `Frecuencia` WHERE `Descripcion`='"+FrecuenciaM+"'");
+              sd.next();
+              jh= reg.createStatement();
+              hj= jh.executeQuery("SELECT `Id`  FROM `Tamaño` WHERE `Descripcion`='"+Tamaño+"'");
+              hj.next();
+              uy= reg.createStatement();
+              yu= uy.executeQuery("SELECT `Id`  FROM `Voltajes` WHERE `Descripcion`='"+Voltaje+"'");
+              yu.next();
+              Il=Integer.parseInt(st.getString(1));
+              VR=Integer.parseInt(lk.getString(1));
+              FeN=Integer.parseInt(sa.getString(1));
+              FeM=Integer.parseInt(sd.getString(1));
+              Ta=Integer.parseInt(hj.getString(1));
+              Vo=Integer.parseInt(yu.getString(1));
           }
-        PreparedStatement ps = reg.prepareStatement("UPDATE `disco_duro` SET `Tipo`='"+Ti+"',`Velocidad`='"+Ve+"',`Capacidad`='"+Ca+"' WHERE `disco_duro`.`Descripcion`='"+TxtModelo.getText()+"'");
+         
+        PreparedStatement ps = reg.prepareStatement("UPDATE `tarjeta_grafica` SET `Iluminacion`='"+Il+"',`Vram`='"+VR+"',`Frecuencia_Nucleo`='"+FeN+"',`Frecuencia_Memoria`='"+FeM+"',`Tamaño`='"+Ta+"',`Voltaje`='"+Vo+"' WHERE `tarjeta_grafica`.`Descripcion`='"+TxtModelo.getText()+"'");
         ps.executeUpdate();
-        JOptionPane.showMessageDialog(null, "Disco Duro modificado");
+        JOptionPane.showMessageDialog(null, "Tarjeta Grafica modificado");
           }catch(SQLException ex){
           JOptionPane.showMessageDialog(null, "Error"+ex );
          }
@@ -343,9 +373,9 @@ public class Tarjeta_Grafica extends javax.swing.JFrame {
        Connection reg = con.getConnection();
        try
          {
-        PreparedStatement ps = reg.prepareStatement("DELETE FROM `disco_duro`  WHERE  `Descripcion` ='"+TxtModelo.getText()+"'");
+        PreparedStatement ps = reg.prepareStatement("DELETE FROM `tarjeta_grafica`  WHERE  `Descripcion` ='"+TxtModelo.getText()+"'");
         ps.executeUpdate();
-        JOptionPane.showMessageDialog(null, "Disco Duro Eliminado");
+        JOptionPane.showMessageDialog(null, "Tarjeta Grafica Eliminado");
           }catch(SQLException ex){
           JOptionPane.showMessageDialog(null, "Error"+ex );
          }
@@ -355,7 +385,8 @@ public class Tarjeta_Grafica extends javax.swing.JFrame {
     {
         TxtId.setText("");
         TxtDescripcion.setText("");
-        TxtDescripcion.requestFocus(true);
+        TxtModelo.setText("");
+        TxtModelo.requestFocus(true);
         TxtId.setBackground(Color.WHITE);
         TxtDescripcion.setBackground(Color.WHITE);
         JOptionPane.showMessageDialog(null, "Los campos has sido limpiardo");
@@ -471,7 +502,7 @@ public class Tarjeta_Grafica extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Id", "Marca", "Modelo", "Iluminacion", "Frecuencia de Nucleo", "Frecuencia de Memoria", "Tamaño", "Voltaje"
+                "Id", "Marca", "Modelo", "Iluminacion", "Vram", "Frecuencia de Nucleo", "Frecuencia de Memoria", "Tamaño", "Voltaje"
             }
         ));
         Table2.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -583,27 +614,24 @@ public class Tarjeta_Grafica extends javax.swing.JFrame {
                         .addComponent(ComboFrecuenciaN, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 940, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 940, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ComboFrecuenciaM, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(ComboTamaño, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(ComboVoltaje, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ComboFrecuenciaM, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(ComboTamaño, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(ComboVoltaje, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
@@ -688,28 +716,18 @@ public class Tarjeta_Grafica extends javax.swing.JFrame {
     }//GEN-LAST:event_BtInsertaActionPerformed
 
     private void BtActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtActualizarActionPerformed
-        if(TxtId.getText().equals("")){
+        if(TxtModelo.getText().equals("")){
         JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
-        TxtId.requestFocus(true);
-        TxtId.setBackground(Color.YELLOW);
+        TxtModelo.requestFocus(true);
+        TxtModelo.setBackground(Color.YELLOW);
         return;
         }
         else {
-            TxtId.setBackground(Color.WHITE);
-        }
-        if(TxtDescripcion.getText().equals("")){
-        JOptionPane.showMessageDialog(null, "El campo de Descripcion esta vacio");
-        TxtDescripcion.requestFocus(true);
-        TxtDescripcion.setBackground(Color.YELLOW);
-        return;
-        }
-        else {
-            TxtDescripcion.setBackground(Color.WHITE);
+            TxtModelo.setBackground(Color.WHITE);
         }
     Actualizar();
     Limpiar();
     Traer();
-   
     Desconectar();
     }//GEN-LAST:event_BtActualizarActionPerformed
 

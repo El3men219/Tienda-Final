@@ -598,7 +598,7 @@ public class Orden extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void TxtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtIdActionPerformed
-        if(TxtId.getText().equals("")){
+  /*     if(TxtId.getText().equals("")){
             JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
             TxtId.requestFocus(true);
             TxtId.setBackground(Color.YELLOW);
@@ -607,22 +607,22 @@ public class Orden extends javax.swing.JFrame {
         else {
             TxtId.setBackground(Color.WHITE);
         }
-        TxtNombre.requestFocus(true);
+        TxtNombre.requestFocus(true);*/
     }//GEN-LAST:event_TxtIdActionPerformed
 
     private void TxtIdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtIdKeyReleased
-        if(TxtId.getText().equals(""))
+       /* if(TxtId.getText().equals(""))
         {
             System.out.println("Digite un Id");
         }
         else
         {
             Desconectar();
-        }
+        }*/
     }//GEN-LAST:event_TxtIdKeyReleased
 
     private void Table1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Table1MouseClicked
-        selectTable();
+       // selectTable();
 
     }//GEN-LAST:event_Table1MouseClicked
 

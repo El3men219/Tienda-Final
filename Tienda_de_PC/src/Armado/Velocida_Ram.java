@@ -95,7 +95,7 @@ public class Velocida_Ram extends javax.swing.JFrame {
           {
                 Vector v = new Vector();
                 v.add(st.getInt(1));
-                v.add(st.getString(2));
+                v.add(st.getString( 2 ) + " Mhz ");
                 modelo.addRow(v);
                 Table1.setModel(modelo);
          }

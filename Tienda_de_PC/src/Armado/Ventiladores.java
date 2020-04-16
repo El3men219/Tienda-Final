@@ -63,6 +63,40 @@ public class Ventiladores extends javax.swing.JFrame {
           JOptionPane.showMessageDialog(null, "Error"+ex );
          }
     }
+    void FiltradorMarca(String Valor)
+    {
+        con = new Conexion();
+        Connection reg = con.getConnection();
+        DefaultTableModel modelo = (DefaultTableModel) Table1.getModel();
+        modelo.getDataVector().clear();
+        ResultSet st,kd,rt;
+        Statement cn,dk,tr;
+        
+        try
+        {
+          tr = reg.createStatement();
+          rt =tr.executeQuery("SELECT `Id` FROM `tipoarticulo` WHERE `Descripcion` = 'Ventilador'");
+          rt.next();
+         cn = reg.createStatement();
+         st =cn.executeQuery("SELECT * FROM `articulo` WHERE `IdTipoArticulo`='"+rt.getString(1)+"' AND `Descripcion` LIKE '%"+ Valor +"%' order by `Descripcion` desc limit 500");
+          while(st.next())
+          {
+                Vector v = new Vector();
+                v.add(st.getInt(1));
+                v.add(st.getString(3));
+                dk = reg.createStatement();
+                kd = dk.executeQuery("SELECT  `Descripcion` FROM `tipoarticulo` WHERE `Id`='"+st.getString(2)+"'");
+                kd.next();
+                v.add(kd.getString(1));
+                modelo.addRow(v);
+                Table1.setModel(modelo);
+         }
+        }
+        catch (SQLException e)
+        {
+            
+        }
+    }
      void TraerIluminacion()
     {
         con = new Conexion();
@@ -248,7 +282,8 @@ public class Ventiladores extends javax.swing.JFrame {
     {
         TxtId.setText("");
         TxtDescripcion.setText("");
-        TxtDescripcion.requestFocus(true);
+        TxtModelo.setText("");
+        TxtModelo.requestFocus(true);
         TxtId.setBackground(Color.WHITE);
         TxtDescripcion.setBackground(Color.WHITE);
         JOptionPane.showMessageDialog(null, "Los campos has sido limpiardo");
@@ -307,6 +342,12 @@ public class Ventiladores extends javax.swing.JFrame {
         TxtId.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 TxtIdKeyReleased(evt);
+            }
+        });
+
+        TxtDescripcion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                TxtDescripcionKeyReleased(evt);
             }
         });
 
@@ -511,28 +552,18 @@ public class Ventiladores extends javax.swing.JFrame {
     }//GEN-LAST:event_BtInsertaActionPerformed
 
     private void BtActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtActualizarActionPerformed
-        if(TxtId.getText().equals("")){
+        if(TxtModelo.getText().equals("")){
         JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
-        TxtId.requestFocus(true);
-        TxtId.setBackground(Color.YELLOW);
+        TxtModelo.requestFocus(true);
+        TxtModelo.setBackground(Color.YELLOW);
         return;
         }
         else {
-            TxtId.setBackground(Color.WHITE);
-        }
-        if(TxtDescripcion.getText().equals("")){
-        JOptionPane.showMessageDialog(null, "El campo de Descripcion esta vacio");
-        TxtDescripcion.requestFocus(true);
-        TxtDescripcion.setBackground(Color.YELLOW);
-        return;
-        }
-        else {
-            TxtDescripcion.setBackground(Color.WHITE);
+            TxtModelo.setBackground(Color.WHITE);
         }
     Actualizar();
     Limpiar();
     Traer();
-   
     Desconectar();
     }//GEN-LAST:event_BtActualizarActionPerformed
 
@@ -616,6 +647,10 @@ public class Ventiladores extends javax.swing.JFrame {
     private void BtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtBuscarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_BtBuscarActionPerformed
+
+    private void TxtDescripcionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtDescripcionKeyReleased
+       FiltradorMarca(TxtDescripcion.getText());
+    }//GEN-LAST:event_TxtDescripcionKeyReleased
 
     /**
      * @param args the command line arguments

@@ -1,6 +1,8 @@
 
 package Mantenimientos;
 
+import Articulos.Articulo;
+import Articulos.Articulo;
 import Libre.Conexion;
 import java.awt.Color;
 import java.sql.Connection;
@@ -23,34 +25,13 @@ public class ArticulosDetalle extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         TxtId.requestFocus(true);
         Traer();
-        cargarUnidadDeMedida();
-        JOptionPane.showMessageDialog(null, "Digite el Id o el nombre del Articulo al cual desea agregar cantidad " );
+        
+        
   }
 
     Conexion con;
 
-      void cargarUnidadDeMedida()
-       {
-        con = new Conexion();
-        Connection reg = con.getConnection();
-        ResultSet st;
-        Statement cn;
-         
-       try
-        {
-         cn = reg.createStatement();
-         st =cn.executeQuery("SELECT * FROM  `unidad_medida` order by id ASC limit 500");
-         ComboUnida.removeAllItems();
-          while(st.next())
-          {
-             ComboUnida.addItem(st.getString(2));
-         }
-        }
-        catch (SQLException e)
-        {
-         JOptionPane.showMessageDialog(null, "Error"+e );
-        }
-       }
+
       
       void Traer()
     {
@@ -472,7 +453,7 @@ public class ArticulosDetalle extends javax.swing.JFrame {
 
     private void BtAtraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtAtraActionPerformed
        this.dispose();
-       Articulos windows = new Articulos();
+       Articulo windows = new Articulo();
        windows.setVisible(true);
        windows.setLocationRelativeTo(null);
     }//GEN-LAST:event_BtAtraActionPerformed

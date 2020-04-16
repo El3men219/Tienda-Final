@@ -429,7 +429,7 @@ public class Clientes extends javax.swing.JFrame {
 
        }     
     }
- void Actualizar()
+ void Actualizar()//no completaa
     {
        con = new Conexion();
        Connection reg = con.getConnection();
@@ -443,7 +443,7 @@ public class Clientes extends javax.swing.JFrame {
          }
     }
     
-    void Eliminar()
+    void Eliminar()//no completa
     {
        con = new Conexion();
        Connection reg = con.getConnection();

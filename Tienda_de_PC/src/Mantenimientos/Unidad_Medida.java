@@ -22,12 +22,42 @@ public class Unidad_Medida extends javax.swing.JFrame {
     public Unidad_Medida() {
         initComponents();
         this.setLocationRelativeTo(null);
-        TxtId.requestFocus(true); 
+        TxtDescripcion.requestFocus(true); 
         Traer();
+        AutoIncremento();
     }
     
     Conexion con;
-  
+    void AutoIncremento()
+    {
+       con = new Conexion();
+       Connection reg = con.getConnection();
+       ResultSet st;
+       Statement cn;
+       int Id=0;
+        try
+         {
+        cn = reg.createStatement();
+        st =cn.executeQuery("SELECT MAX(`Id`) FROM `unidad`");
+         while(st.next())
+          {
+             Id=Integer.parseInt(String.valueOf(st.getInt(1)));
+         Id+=1;
+        if(Id<=1)
+         {
+             System.out.println(""+Id);
+             Id=1;
+             TxtId.setText(String.valueOf(Id));
+         }
+        else 
+        {
+            TxtId.setText(String.valueOf(Id));
+        }} 
+         }catch(SQLException ex)
+         {
+          JOptionPane.showMessageDialog(null, "Error"+ex );
+         }
+    }
     void Traer()
     {
         con = new Conexion();
@@ -40,12 +70,13 @@ public class Unidad_Medida extends javax.swing.JFrame {
        try
         {
          cn = reg.createStatement();
-         st =cn.executeQuery("SELECT * FROM  `unidad_medida` order by id ASC limit 500");
+         st =cn.executeQuery("SELECT * FROM  `unidad` order by id ASC limit 500");
           while(st.next())
           {
                 Vector v = new Vector();
                 v.add(st.getInt(1));
                 v.add(st.getString(2));
+                v.add(st.getString(3));
                 modelo.addRow(v);
                 Table1.setModel(modelo);
          }
@@ -62,7 +93,7 @@ public class Unidad_Medida extends javax.swing.JFrame {
        Connection reg = con.getConnection();
         try
          {
-           PreparedStatement ps = reg.prepareStatement("INSERT INTO `unidad_medida`(`Id`, `Descripcion`) VALUES ('"+TxtId.getText()+"','"+TxtDescripcion.getText()+"')");
+           PreparedStatement ps = reg.prepareStatement("INSERT INTO `unidad`(`Id`, `Descripcion`, `Abrebiatura`) VALUES ('"+TxtId.getText()+"','"+TxtDescripcion.getText()+"','"+TxtAbreviatura.getText()+"')");
            ps.executeUpdate();
            JOptionPane.showMessageDialog(null, "Nueva unidad de medidad agregada" );
          }catch(SQLException ex)
@@ -77,7 +108,7 @@ public class Unidad_Medida extends javax.swing.JFrame {
        Connection reg = con.getConnection();
        try
          {
-        PreparedStatement ps = reg.prepareStatement("UPDATE `unidad_medida` SET `Descripcion` = '"+TxtDescripcion.getText()+"' WHERE `unidad_medida`.`Id` ='"+TxtId.getText()+"'");
+        PreparedStatement ps = reg.prepareStatement("UPDATE `unidad` SET `Descripcion`='"+TxtDescripcion.getText()+"',`Abrebiatura`='"+TxtAbreviatura.getText()+"'  WHERE `unidad`.`Id` ='"+TxtId.getText()+"'");
         ps.executeUpdate();
         JOptionPane.showMessageDialog(null, "Unidad de medidad modificada");
           }catch(SQLException ex){
@@ -91,7 +122,7 @@ public class Unidad_Medida extends javax.swing.JFrame {
        Connection reg = con.getConnection();
        try
          {
-        PreparedStatement ps = reg.prepareStatement("DELETE FROM `unidad_medida` WHERE  Id='"+TxtId.getText()+"'");
+        PreparedStatement ps = reg.prepareStatement("DELETE FROM `unidad` WHERE  Id='"+TxtId.getText()+"'");
         ps.executeUpdate();
         JOptionPane.showMessageDialog(null, "Unidad de medidad Eliminada");
           }catch(SQLException ex){
@@ -103,9 +134,11 @@ public class Unidad_Medida extends javax.swing.JFrame {
     {
         TxtId.setText("");
         TxtDescripcion.setText("");
-        TxtId.requestFocus(true);
+        TxtAbreviatura.setText("");
+        TxtDescripcion.requestFocus(true);
         TxtId.setBackground(Color.WHITE);
         TxtDescripcion.setBackground(Color.WHITE);
+        TxtAbreviatura.setBackground(Color.WHITE);
         JOptionPane.showMessageDialog(null, "Los campos has sido limpiardo");
     }
     
@@ -160,6 +193,8 @@ public class Unidad_Medida extends javax.swing.JFrame {
         BtMenu = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         Table1 = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+        TxtAbreviatura = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -208,10 +243,13 @@ public class Unidad_Medida extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Id", "Descripcion"
+                "Id", "Descripcion", "Abreviatura"
             }
         ));
         jScrollPane1.setViewportView(Table1);
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel3.setText("Abreviatura:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -220,26 +258,32 @@ public class Unidad_Medida extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(TxtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(BtInserta, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(TxtId, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(79, 79, 79)
-                                .addComponent(BtActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(BtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(BtEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 8, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(TxtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(BtInserta, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(TxtId, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(79, 79, 79)
+                                        .addComponent(BtActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(BtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(BtEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(TxtAbreviatura, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 8, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -258,7 +302,11 @@ public class Unidad_Medida extends javax.swing.JFrame {
                     .addComponent(BtInserta)
                     .addComponent(BtEliminar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(TxtAbreviatura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -287,6 +335,7 @@ public class Unidad_Medida extends javax.swing.JFrame {
     Insertar();
     Limpiar();
     Traer();
+    AutoIncremento();
     Desconectar();
     }//GEN-LAST:event_BtInsertaActionPerformed
 
@@ -312,6 +361,7 @@ public class Unidad_Medida extends javax.swing.JFrame {
     Actualizar();
     Limpiar();
     Traer();
+    AutoIncremento();
     Desconectar();
     }//GEN-LAST:event_BtActualizarActionPerformed
 
@@ -364,6 +414,7 @@ public class Unidad_Medida extends javax.swing.JFrame {
     Eliminar();
     Limpiar();
     Traer();
+    AutoIncremento();
     Desconectar();
     }//GEN-LAST:event_BtEliminarActionPerformed
 
@@ -408,10 +459,12 @@ public class Unidad_Medida extends javax.swing.JFrame {
     private javax.swing.JButton BtInserta;
     private javax.swing.JButton BtMenu;
     private javax.swing.JTable Table1;
+    private javax.swing.JTextField TxtAbreviatura;
     private javax.swing.JTextField TxtDescripcion;
     private javax.swing.JTextField TxtId;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

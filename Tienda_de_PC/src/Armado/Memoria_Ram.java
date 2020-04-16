@@ -623,28 +623,18 @@ public class Memoria_Ram extends javax.swing.JFrame {
     }//GEN-LAST:event_BtInsertaActionPerformed
 
     private void BtActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtActualizarActionPerformed
-        if(TxtId.getText().equals("")){
+        if(TxtModelo.getText().equals("")){
         JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
-        TxtId.requestFocus(true);
-        TxtId.setBackground(Color.YELLOW);
+        TxtModelo.requestFocus(true);
+        TxtModelo.setBackground(Color.YELLOW);
         return;
         }
         else {
-            TxtId.setBackground(Color.WHITE);
-        }
-        if(TxtDescripcion.getText().equals("")){
-        JOptionPane.showMessageDialog(null, "El campo de Descripcion esta vacio");
-        TxtDescripcion.requestFocus(true);
-        TxtDescripcion.setBackground(Color.YELLOW);
-        return;
-        }
-        else {
-            TxtDescripcion.setBackground(Color.WHITE);
+            TxtModelo.setBackground(Color.WHITE);
         }
     Actualizar();
     Limpiar();
     Traer();
-   
     Desconectar();
     }//GEN-LAST:event_BtActualizarActionPerformed
 
