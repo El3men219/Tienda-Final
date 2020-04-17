@@ -25,42 +25,10 @@ public class Usuario extends javax.swing.JFrame {
         Traer();
         llenarTabla();
         TraerTipo();
-       // AutoIncremento();
     }
     
     Conexion con;
     
-       void AutoIncremento()
-    {
-       con = new Conexion();
-       Connection reg = con.getConnection();
-       ResultSet st;
-       Statement cn;
-       int Id=0;
-        try
-         {
-        cn = reg.createStatement();
-        st =cn.executeQuery("SELECT MAX(`Id`) FROM `usuarios`");
-         while(st.next())
-          {
-         Id=Integer.parseInt(String.valueOf(st.getInt(1)));
-         Id+=1;
-        if(Id<=1)
-         {
-             System.out.println(""+Id);
-             Id=1;
-             TxtId.setText(String.valueOf(Id));
-         }
-        else 
-        {
-            TxtId.setText(String.valueOf(Id));
-        }}  
-         }catch(SQLException ex)
-         {
-          JOptionPane.showMessageDialog(null, "Error"+ex );
-         }
-    }
-
     void Traer()
     {
        con = new Conexion();
@@ -507,13 +475,14 @@ public class Usuario extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(TxtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(TxtContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(TxtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(TxtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TxtContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4)
+                        .addComponent(TxtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(28, 28, 28)
@@ -657,13 +626,8 @@ public class Usuario extends javax.swing.JFrame {
     Insertar();
     Limpiar();
     Traer();
-    AutoIncremento();
     Desconectar();
     }//GEN-LAST:event_BtActualizarActionPerformed
-
-    private void Table2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Table2MouseClicked
-        selectTable();
-    }//GEN-LAST:event_Table2MouseClicked
 
     private void TxtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtBuscarKeyReleased
         FiltradorTercero(TxtBuscar.getText());
@@ -676,6 +640,10 @@ public class Usuario extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_Tabe1MouseClicked
+
+    private void Table2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Table2MouseClicked
+        selectTable();
+    }//GEN-LAST:event_Table2MouseClicked
 
     /**
      * @param args the command line arguments
