@@ -24,9 +24,41 @@ public class Tipo_Sucursal extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         TxtId.requestFocus(true); 
         Traer();
+        AutoIncremento();
     }
     
     Conexion con;
+    
+    void AutoIncremento()
+    {
+       con = new Conexion();
+       Connection reg = con.getConnection();
+       ResultSet st;
+       Statement cn;
+       int Id=0;
+        try
+         {
+        cn = reg.createStatement();
+        st =cn.executeQuery("SELECT MAX(`Id`) FROM `tiposucursal`");
+         while(st.next())
+          {
+         Id=Integer.parseInt(String.valueOf(st.getInt(1)));
+         Id+=1;
+        if(Id<=1)
+         {
+             System.out.println(""+Id);
+             Id=1;
+             TxtId.setText(String.valueOf(Id));
+         }
+        else 
+        {
+            TxtId.setText(String.valueOf(Id));
+        }}  
+         }catch(SQLException ex)
+         {
+          JOptionPane.showMessageDialog(null, "Error"+ex );
+         }
+    }
   
     void Traer()
     {
@@ -40,7 +72,7 @@ public class Tipo_Sucursal extends javax.swing.JFrame {
        try
         {
          cn = reg.createStatement();
-         st =cn.executeQuery("SELECT * FROM  `tipo_Sucursal` order by id ASC limit 500");
+         st =cn.executeQuery("SELECT * FROM  `tiposucursal` order by id ASC limit 500");
           while(st.next())
           {
                 Vector v = new Vector();
@@ -62,7 +94,7 @@ public class Tipo_Sucursal extends javax.swing.JFrame {
        Connection reg = con.getConnection();
         try
          {
-           PreparedStatement ps = reg.prepareStatement("INSERT INTO `tipo_Sucursal` (`Id`, `Descripcion`) VALUES ('"+TxtId.getText()+"','"+TxtDescripcion.getText()+"')");
+           PreparedStatement ps = reg.prepareStatement("INSERT INTO `tiposucursal` (`Id`, `Descripcion`) VALUES ('"+TxtId.getText()+"','"+TxtDescripcion.getText()+"')");
            ps.executeUpdate();
            JOptionPane.showMessageDialog(null, "Nuevo tipo Sucursal agregada" );
          }catch(SQLException ex)
@@ -77,7 +109,7 @@ public class Tipo_Sucursal extends javax.swing.JFrame {
        Connection reg = con.getConnection();
        try
          {
-        PreparedStatement ps = reg.prepareStatement("UPDATE `tipo_Sucursal` SET `Descripcion` = '"+TxtDescripcion.getText()+"' WHERE `unidad_medida`.`Id` ='"+TxtId.getText()+"'");
+        PreparedStatement ps = reg.prepareStatement("UPDATE `tiposucursal` SET `Descripcion` = '"+TxtDescripcion.getText()+"' WHERE `tiposucursal`.`Id` ='"+TxtId.getText()+"'");
         ps.executeUpdate();
         JOptionPane.showMessageDialog(null, "tipo Sucursal modificado");
           }catch(SQLException ex){
@@ -91,7 +123,7 @@ public class Tipo_Sucursal extends javax.swing.JFrame {
        Connection reg = con.getConnection();
        try
          {
-        PreparedStatement ps = reg.prepareStatement("DELETE FROM `tipo_Sucursal` WHERE  Id='"+TxtId.getText()+"'");
+        PreparedStatement ps = reg.prepareStatement("DELETE FROM `tiposucursal` WHERE  Id='"+TxtId.getText()+"'");
         ps.executeUpdate();
         JOptionPane.showMessageDialog(null, " tipo Sucursal Eliminado");
           }catch(SQLException ex){
@@ -124,7 +156,7 @@ public class Tipo_Sucursal extends javax.swing.JFrame {
        try
         {
          cn = reg.createStatement();
-         st =cn.executeQuery("SELECT `Descripcion` FROM `tipo_Sucursal` WHERE id='"+TxtId.getText()+"' ");
+         st =cn.executeQuery("SELECT `Descripcion` FROM `tiposucursal` WHERE id='"+TxtId.getText()+"' ");
           while(st.next())
           {
             TxtDescripcion.setText(st.getString(1));   
@@ -285,6 +317,7 @@ public class Tipo_Sucursal extends javax.swing.JFrame {
     Insertar();
     Limpiar();
     Traer();
+    AutoIncremento();
     Desconectar();
     }//GEN-LAST:event_BtInsertaActionPerformed
 

@@ -2,11 +2,15 @@
 package Terceros;
 
 import Libre.Conexion;
+import java.awt.Color;
+import java.awt.HeadlessException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -20,6 +24,7 @@ public class Empleado extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         TxtId.requestFocus(true); 
         Traer();
+        TraerSucursal();
         TraerPusto();
         TraerDepartamento();
         TraerTipo();
@@ -54,6 +59,29 @@ public class Empleado extends javax.swing.JFrame {
          {
           javax.swing.JOptionPane.showMessageDialog(null, "Error"+ex );
          }
+    }
+    
+    void TraerSucursal()
+    {
+        con = new Conexion();
+        Connection reg = con.getConnection();
+        ResultSet st;
+        Statement cn;
+         
+       try
+        {
+         cn = reg.createStatement();
+         st =cn.executeQuery("SELECT * FROM `sucursall` order by Id ASC limit 500");
+         ComboSucursal.removeAllItems();
+          while(st.next())
+          {
+             ComboSucursal.addItem(st.getString(2));
+         }
+        }
+        catch (SQLException e)
+        {
+         javax.swing.JOptionPane.showMessageDialog(null, "Error"+e );
+        }
     }
     
     void TraerPusto()
@@ -170,6 +198,182 @@ public class Empleado extends javax.swing.JFrame {
          javax.swing.JOptionPane.showMessageDialog(null, "Error"+e );
         }
     }
+    
+     void llenarTabla()
+    {
+        con = new Conexion();
+        Connection reg = con.getConnection();
+        DefaultTableModel modelo = (DefaultTableModel) Table2.getModel();
+        modelo.getDataVector().clear();
+        ResultSet st,kl,dp,ew,op,nb;
+        Statement cn,lk,qa,we,po,bn;
+        
+       try
+        {
+         cn = reg.createStatement();
+         st =cn.executeQuery("SELECT * FROM  `empleado` order by `Tercero` ASC limit 500");
+         
+
+         while(st.next())
+         {
+            
+            Vector v = new Vector();
+            
+            qa = reg.createStatement();
+            dp = qa.executeQuery("SELECT `Nombre` FROM `tercero` WHERE `idTercero` ='"+st.getString(1)+"' ");
+            dp.next();
+            
+            lk = reg.createStatement();
+            kl =lk.executeQuery("SELECT `Descripcion` FROM `sucursall` WHERE `Id` ='"+st.getString(2)+"' ");
+            kl.next();
+            
+            po = reg.createStatement();
+            op = po.executeQuery("SELECT `Descripcion` FROM `puesto` WHERE `Id` ='"+st.getString(2)+"' ");
+            op.next();
+            
+            we = reg.createStatement();
+            ew = we.executeQuery("SELECT `Descripcion` FROM `departamento` WHERE `Id` ='"+st.getString(2)+"' ");
+            ew.next();
+            
+            bn = reg.createStatement();
+            nb = bn.executeQuery("SELECT `Descripcion` FROM `tipo_empleados` WHERE `id` ='"+st.getString(2)+"' ");
+            nb.next();
+            
+            v.add(dp.getString(1));
+            v.add(kl.getString(2));
+            v.add(op.getString(3));
+            v.add(ew.getString(4));
+            v.add(nb.getString(5));
+            modelo.addRow(v);
+            Table2.setModel(modelo);  
+         }
+
+        }
+        catch (SQLException e)
+        {
+         JOptionPane.showMessageDialog(null, "Error"+e );
+        }
+    }
+     
+       void selectTable()
+    {
+     try{
+     
+        int fila = Table1.getSelectedRow();
+       if(fila >=0)
+       {
+           TxtId.setText(Table1.getValueAt(fila, 0).toString());
+           
+       }
+
+       }catch (HeadlessException ex){
+
+             JOptionPane.showMessageDialog(null, "Error: "+ex+"\nInténtelo nuevamente", " .::Error En la Operacion::." ,JOptionPane.ERROR_MESSAGE);
+
+       }     
+    }
+       
+       void Insertar()
+    {
+       con = new Conexion();
+       Connection reg = con.getConnection();
+       ResultSet st,kl,dp,ew,op,nb,pt;
+       Statement cn,lk,qa,we,po,bn,tp;
+       int SucursalI=0,PuestoI=0,DepartamentoI=0,TipoI=0,TandaI=0,EstadoI=0;
+       String Sucursal="", Puesto="", Departamento="", Tipo="",Tanda="",Estado="";
+       Sucursal=ComboSucursal.getSelectedItem().toString();
+       Puesto=ComboPuesto.getSelectedItem().toString();
+       Departamento=ComboDepartamento.getSelectedItem().toString();
+       Tipo=ComboTipo.getSelectedItem().toString();
+       Tanda=ComboTanda.getSelectedItem().toString();
+       Estado=ComboEstado.getSelectedItem().toString();
+         
+        try
+         {
+         cn = reg.createStatement();
+         st =cn.executeQuery("SELECT `Id` FROM `sucursall` WHERE  `Descripcion`='"+Sucursal+"' ");
+         st.next();
+         SucursalI=Integer.parseInt(st.getString(1));      
+                  
+            lk = reg.createStatement();
+            kl =lk.executeQuery("SELECT `Id` FROM `puesto` WHERE `Descripcion` ='"+Puesto+"' ");
+            kl.next();
+            PuestoI=Integer.parseInt(st.getString(1));
+            
+            po = reg.createStatement();
+            op = po.executeQuery("SELECT `Id` FROM `departamento` WHERE `Descripcion` ='"+Departamento+"' ");
+            op.next();
+            DepartamentoI=Integer.parseInt(st.getString(1));
+            
+            we = reg.createStatement();
+            ew = we.executeQuery("SELECT `id` FROM `tipo_empleados` WHERE `Descripcion` ='"+Tipo+"' ");
+            ew.next();
+            TipoI=Integer.parseInt(st.getString(1));
+            
+            tp = reg.createStatement();
+            pt = tp.executeQuery("SELECT `id` FROM `tandas` WHERE `Descripcion` ='"+Tipo+"' ");
+            pt.next();
+            TandaI=Integer.parseInt(st.getString(1));
+            
+            bn = reg.createStatement();
+            nb = bn.executeQuery("SELECT `Id` FROM `estado_empleado` WHERE `Descripcion` ='"+Estado+"' ");
+            nb.next();
+            EstadoI=Integer.parseInt(st.getString(1));
+      
+          
+           PreparedStatement ps = reg.prepareStatement("INSERT INTO `empleado`(`Id`, `Sucursal`, `Puesto`, `Departamento`, `Tipo_Empleado`, `Tanda`, `Estado`) VALUES "
+                   + "('"+TxtId.getText()+"','"+SucursalI+"','"+PuestoI+"','"+DepartamentoI+"','"+TipoI+"','"+TandaI+"','"+EstadoI+"')");
+           ps.executeUpdate();
+           JOptionPane.showMessageDialog(null, "Nuevo Empleado  agregada" );
+         }catch(SQLException ex)
+         {
+          JOptionPane.showMessageDialog(null, "Error"+ex );
+         }
+    }
+       
+        void FiltradorTercero(String Valor)
+    {
+        con = new Conexion();
+        Connection reg = con.getConnection();
+        DefaultTableModel modelo = (DefaultTableModel) Table1.getModel();
+        modelo.getDataVector().clear();
+        ResultSet st,kd,rt;
+        Statement cn,dk,tr;
+
+        try
+        {
+         cn = reg.createStatement();
+         st =cn.executeQuery("SELECT * FROM Tercero WHERE Nombre LIKE '%"+ Valor +"%' order by Nombre desc limit 500");
+          while(st.next())
+          {
+                Vector v = new Vector();
+                dk = reg.createStatement();
+                kd = dk.executeQuery("SELECT  Id,Apellido FROM tipoarticulo WHERE Id='"+st.getString(1)+"'");
+                kd.next();
+                v.add(kd.getInt(1));//id
+                v.add(st.getString(2));//nombre
+                v.add(kd.getString(2));//apellido
+                modelo.addRow(v);
+                Table1.setModel(modelo);
+         }
+        }
+        catch (SQLException e)
+        {
+
+        }
+    }
+       
+       void Limpiar()
+    {
+        TxtId.setText("");
+        
+        JOptionPane.showMessageDialog(null, "Los campos has sido limpiardo");
+    }
+       
+        void Desconectar()
+    {
+         con.desconectar();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -221,6 +425,11 @@ public class Empleado extends javax.swing.JFrame {
                 "Id", "Nombre", "Apellido"
             }
         ));
+        Table1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Table1MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(Table1);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -248,12 +457,17 @@ public class Empleado extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Nombre", "Usuario", "Contraseña", "Tipo"
+                "Nombre", "Sucursal", "Puesto", "Departamento", "Tipo_Empleado"
             }
         ));
         jScrollPane3.setViewportView(Table2);
 
         BtInserta.setText("Insertar");
+        BtInserta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtInsertaActionPerformed(evt);
+            }
+        });
 
         BtActualizar.setText("Actualizar");
 
@@ -381,6 +595,49 @@ public class Empleado extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void BtInsertaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtInsertaActionPerformed
+       if(TxtId.getText().equals("")){
+        JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
+        TxtId.requestFocus(true);
+        TxtId.setBackground(Color.YELLOW);
+        return;
+        }
+        else {
+            TxtId.setBackground(Color.WHITE);
+        }
+        
+    Insertar();
+    Traer();
+    llenarTabla();
+    Limpiar();
+    Desconectar();
+    }                                         
+
+    private void BtActualizarActionPerformed(java.awt.event.ActionEvent evt) {                                             
+         if(TxtId.getText().equals("")){
+        JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
+        TxtId.requestFocus(true);
+        TxtId.setBackground(Color.YELLOW);
+        return;
+        }
+        else {
+            TxtId.setBackground(Color.WHITE);
+        }
+        
+    Insertar();
+    Limpiar();
+    Traer();
+    Desconectar(); 
+    }//GEN-LAST:event_BtInsertaActionPerformed
+
+    private void Table1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Table1MouseClicked
+       int fila = Table1.getSelectedRow();
+        if (fila >= 0) {
+            TxtId.setText(Table1.getValueAt(fila, 0).toString());
+            
+        }
+    }//GEN-LAST:event_Table1MouseClicked
 
     /**
      * @param args the command line arguments

@@ -395,9 +395,6 @@ public class Usuario extends javax.swing.JFrame {
             }
         });
         jScrollPane3.setViewportView(Table2);
-        if (Table2.getColumnModel().getColumnCount() > 0) {
-            Table2.getColumnModel().getColumn(3).setHeaderValue("Tipo");
-        }
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel5.setText("Estado: ");
