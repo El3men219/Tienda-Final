@@ -1,4 +1,8 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package Mantenimientos;
 
 import Libre.Conexion;
@@ -15,23 +19,56 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author score
+ * @author endy2
  */
-public class Apodo extends javax.swing.JFrame {
+public class Tipo_Usuario extends javax.swing.JFrame {
 
-
-    public Apodo() {
+    /**
+     * Creates new form Tipo_Usuario
+     */
+    public Tipo_Usuario() {
         initComponents();
         this.setLocationRelativeTo(null);
         TxtId.requestFocus(true); 
         Traer();
+        AutoIncremento();
         
-        llenarTabla();
     }
     
     Conexion con;
     
-    void selectTable()
+       void AutoIncremento()
+    {
+       con = new Conexion();
+       Connection reg = con.getConnection();
+       ResultSet st;
+       Statement cn;
+       int Id=0;
+        try
+         {
+        cn = reg.createStatement();
+        st =cn.executeQuery("SELECT MAX(`Id`) FROM `tipo_de_usuario`");
+         while(st.next())
+          {
+         Id=Integer.parseInt(String.valueOf(st.getInt(1)));
+         Id+=1;
+        if(Id<=1)
+         {
+             System.out.println(""+Id);
+             Id=1;
+             TxtId.setText(String.valueOf(Id));
+         }
+        else 
+        {
+            TxtId.setText(String.valueOf(Id));
+        }}  
+         }catch(SQLException ex)
+         {
+          JOptionPane.showMessageDialog(null, "Error"+ex );
+         }
+    }
+       
+       void selectTable()
     {
      try{
      
@@ -48,7 +85,7 @@ public class Apodo extends javax.swing.JFrame {
 
        }     
     }
-          
+    
     void Traer()
     {
         con = new Conexion();
@@ -61,7 +98,7 @@ public class Apodo extends javax.swing.JFrame {
        try
         {
          cn = reg.createStatement();
-         st =cn.executeQuery("SELECT * FROM  `apodo` order by id ASC limit 500");
+         st =cn.executeQuery("SELECT * FROM  `tipo_de_usuario` order by id ASC limit 500");
           while(st.next())
           {
                 Vector v = new Vector();
@@ -83,9 +120,9 @@ public class Apodo extends javax.swing.JFrame {
        Connection reg = con.getConnection();
         try
          {
-           PreparedStatement ps = reg.prepareStatement("INSERT INTO `apodo`(`Id`, `IdPersona`, `Descripcion`) VALUES ('"+TxtId.getText()+"','"+"ID Tercero"+"','"+TxtDescripcion.getText()+"')");
+           PreparedStatement ps = reg.prepareStatement("INSERT INTO `tipo_de_usuario` (`Id`, `Descripcion`) VALUES ('"+TxtId.getText()+"','"+TxtDescripcion.getText()+"')");
            ps.executeUpdate();
-           JOptionPane.showMessageDialog(null, "Nuevo Apodo agregada" );
+           JOptionPane.showMessageDialog(null, "Nuevo Tipo Usuario agregado" );
          }catch(SQLException ex)
          {
           JOptionPane.showMessageDialog(null, "Error"+ex );
@@ -98,9 +135,9 @@ public class Apodo extends javax.swing.JFrame {
        Connection reg = con.getConnection();
        try
          {
-        PreparedStatement ps = reg.prepareStatement("UPDATE `apodo` SET `Descripcion` = '"+TxtDescripcion.getText()+"' WHERE `apodo`.`Id` ='"+TxtId.getText()+"'");
+        PreparedStatement ps = reg.prepareStatement("UPDATE `tipo_de_usuario` SET `Descripcion` = '"+TxtDescripcion.getText()+"' WHERE `tipo_usuario`.`Id` ='"+TxtId.getText()+"'");
         ps.executeUpdate();
-        JOptionPane.showMessageDialog(null, "Apodo modificado");
+        JOptionPane.showMessageDialog(null, "tipo_usuario modificado");
           }catch(SQLException ex){
           JOptionPane.showMessageDialog(null, "Error"+ex );
          }
@@ -112,9 +149,9 @@ public class Apodo extends javax.swing.JFrame {
        Connection reg = con.getConnection();
        try
          {
-        PreparedStatement ps = reg.prepareStatement("DELETE FROM `apodo` WHERE  Id='"+TxtId.getText()+"'");
+        PreparedStatement ps = reg.prepareStatement("DELETE FROM `tipo_de_usuario` WHERE  Id='"+TxtId.getText()+"'");
         ps.executeUpdate();
-        JOptionPane.showMessageDialog(null, "estado civil  Eliminado");
+        JOptionPane.showMessageDialog(null, " tipo_telefono Eliminado");
           }catch(SQLException ex){
           JOptionPane.showMessageDialog(null, "Error"+ex );
          }
@@ -134,42 +171,6 @@ public class Apodo extends javax.swing.JFrame {
     {
          con.desconectar();
     }
-    
-  
-    
-    void llenarTabla()
-    {
-        con = new Conexion();
-        Connection reg = con.getConnection();
-        DefaultTableModel modelo = (DefaultTableModel) Table2.getModel();
-        modelo.getDataVector().clear();
-        ResultSet st,kl;
-        Statement cn,lk;
-        
-       try
-        {
-         cn = reg.createStatement();
-         st =cn.executeQuery("SELECT * FROM  `Tercero` order by `IdTercero` ASC limit 500");
-         lk = reg.createStatement();
-         kl = lk.executeQuery("SELECT * FROM `persona` order by id ASC limit 500");
-
-         while(st.next() && kl.next())
-         {
-            Vector v = new Vector();
-            v.add(st.getInt(1));
-            v.add(st.getString(2));
-            v.add(kl.getString(2));
-            modelo.addRow(v);
-            Table2.setModel(modelo);  
-         }
-
-        }
-        catch (SQLException e)
-        {
-         JOptionPane.showMessageDialog(null, "Error"+e );
-        }
-    }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -181,28 +182,20 @@ public class Apodo extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         TxtId = new javax.swing.JTextField();
-        TxtDescripcion = new javax.swing.JTextField();
-        BtInserta = new javax.swing.JButton();
-        BtEliminar = new javax.swing.JButton();
         BtActualizar = new javax.swing.JButton();
         BtMenu = new javax.swing.JButton();
+        BtEliminar = new javax.swing.JButton();
+        BtInserta = new javax.swing.JButton();
+        TxtDescripcion = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         Table1 = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        Table2 = new javax.swing.JTable();
-        jLabel4 = new javax.swing.JLabel();
-        TxtBusca = new javax.swing.JTextField();
-        btBuscar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel1.setText("Id: ");
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel2.setText("Descripcion:");
 
         TxtId.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -215,20 +208,6 @@ public class Apodo extends javax.swing.JFrame {
             }
         });
 
-        BtInserta.setText("Insertar");
-        BtInserta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtInsertaActionPerformed(evt);
-            }
-        });
-
-        BtEliminar.setText("Eliminar");
-        BtEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtEliminarActionPerformed(evt);
-            }
-        });
-
         BtActualizar.setText("Actualizar");
         BtActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -238,40 +217,32 @@ public class Apodo extends javax.swing.JFrame {
 
         BtMenu.setText("Menu");
 
+        BtEliminar.setText("Eliminar");
+        BtEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtEliminarActionPerformed(evt);
+            }
+        });
+
+        BtInserta.setText("Insertar");
+        BtInserta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtInsertaActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel2.setText("Descripcion:");
+
         Table1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Id", "Apodo"
+                "Id", "Descripcion"
             }
         ));
-        Table1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                Table1MouseClicked(evt);
-            }
-        });
         jScrollPane1.setViewportView(Table1);
-
-        Table2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Id", "Nombre", "Apellido"
-            }
-        ));
-        Table2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                Table2MouseClicked(evt);
-            }
-        });
-        jScrollPane2.setViewportView(Table2);
-
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel4.setText("Nombre:");
-
-        btBuscar.setText("Buscar");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -280,10 +251,6 @@ public class Apodo extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -301,15 +268,10 @@ public class Apodo extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(BtMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(BtEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(TxtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btBuscar)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(BtEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 41, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -325,133 +287,117 @@ public class Apodo extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(TxtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(BtInserta)
-                    .addComponent(BtEliminar)
-                    .addComponent(jLabel4)
-                    .addComponent(TxtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btBuscar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(BtEliminar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void BtInsertaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtInsertaActionPerformed
-        if(TxtId.getText().equals("")){
-        JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
-        TxtId.requestFocus(true);
-        TxtId.setBackground(Color.YELLOW);
-        return;
-        }
-        else {
-            TxtId.setBackground(Color.WHITE);
-        }
-        if(TxtDescripcion.getText().equals("")){
-        JOptionPane.showMessageDialog(null, "El campo de Descripcion esta vacio");
-        TxtDescripcion.requestFocus(true);
-        TxtDescripcion.setBackground(Color.YELLOW);
-        return;
-        }
-        else {
-            TxtDescripcion.setBackground(Color.WHITE);
-        }
-    Insertar();
-    Limpiar();
-    Traer();
-    
-    Desconectar();
-    }//GEN-LAST:event_BtInsertaActionPerformed
-
-    private void BtActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtActualizarActionPerformed
-        if(TxtId.getText().equals("")){
-        JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
-        TxtId.requestFocus(true);
-        TxtId.setBackground(Color.YELLOW);
-        return;
-        }
-        else {
-            TxtId.setBackground(Color.WHITE);
-        }
-        if(TxtDescripcion.getText().equals("")){
-        JOptionPane.showMessageDialog(null, "El campo de Descripcion esta vacio");
-        TxtDescripcion.requestFocus(true);
-        TxtDescripcion.setBackground(Color.YELLOW);
-        return;
-        }
-        else {
-            TxtDescripcion.setBackground(Color.WHITE);
-        }
-    Actualizar();
-    Limpiar();
-    Traer();
-    
-    Desconectar();
-    }//GEN-LAST:event_BtActualizarActionPerformed
-
     private void TxtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtIdActionPerformed
         if(TxtId.getText().equals("")){
-        JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
-        TxtId.requestFocus(true);
-        TxtId.setBackground(Color.YELLOW);
-        return;
+            JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
+            TxtId.requestFocus(true);
+            TxtId.setBackground(Color.YELLOW);
+            return;
         }
         else {
             TxtId.setBackground(Color.WHITE);
         }
-        TxtDescripcion.requestFocus(true);  
+        TxtDescripcion.requestFocus(true);
        
         Desconectar();
     }//GEN-LAST:event_TxtIdActionPerformed
 
     private void TxtIdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtIdKeyReleased
-          if(TxtId.getText().equals(""))
-          {
-              System.out.println("Digite un Id");
-          }
-          else
-          {
-              Traer();
-              Desconectar();
-          } 
+        if(TxtId.getText().equals(""))
+        {
+            System.out.println("Digite un Id");
+        }
+        else
+        {
+            Traer();
+            Desconectar();
+        }
     }//GEN-LAST:event_TxtIdKeyReleased
 
-    private void BtEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtEliminarActionPerformed
+    private void BtActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtActualizarActionPerformed
         if(TxtId.getText().equals("")){
-        JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
-        TxtId.requestFocus(true);
-        TxtId.setBackground(Color.YELLOW);
-        return;
+            JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
+            TxtId.requestFocus(true);
+            TxtId.setBackground(Color.YELLOW);
+            return;
         }
         else {
             TxtId.setBackground(Color.WHITE);
         }
         if(TxtDescripcion.getText().equals("")){
-        JOptionPane.showMessageDialog(null, "El campo de Descripcion esta vacio");
-        TxtDescripcion.requestFocus(true);
-        TxtDescripcion.setBackground(Color.YELLOW);
-        return;
+            JOptionPane.showMessageDialog(null, "El campo de Descripcion esta vacio");
+            TxtDescripcion.requestFocus(true);
+            TxtDescripcion.setBackground(Color.YELLOW);
+            return;
         }
         else {
             TxtDescripcion.setBackground(Color.WHITE);
         }
-    Eliminar();
-    Limpiar();
-    Traer();
-  
-    Desconectar();
+        Actualizar();
+        Limpiar();
+        Traer();
+        Desconectar();
+    }//GEN-LAST:event_BtActualizarActionPerformed
+
+    private void BtEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtEliminarActionPerformed
+        if(TxtId.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
+            TxtId.requestFocus(true);
+            TxtId.setBackground(Color.YELLOW);
+            return;
+        }
+        else {
+            TxtId.setBackground(Color.WHITE);
+        }
+        if(TxtDescripcion.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "El campo de Descripcion esta vacio");
+            TxtDescripcion.requestFocus(true);
+            TxtDescripcion.setBackground(Color.YELLOW);
+            return;
+        }
+        else {
+            TxtDescripcion.setBackground(Color.WHITE);
+        }
+        Eliminar();
+        Limpiar();
+        Traer();
+        Desconectar();
     }//GEN-LAST:event_BtEliminarActionPerformed
 
-    private void Table1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Table1MouseClicked
-        selectTable();
-    
-    }//GEN-LAST:event_Table1MouseClicked
-
-    private void Table2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Table2MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_Table2MouseClicked
+    private void BtInsertaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtInsertaActionPerformed
+        if(TxtId.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "El campo de Id esta vacio");
+            TxtId.requestFocus(true);
+            TxtId.setBackground(Color.YELLOW);
+            return;
+        }
+        else {
+            TxtId.setBackground(Color.WHITE);
+        }
+        if(TxtDescripcion.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "El campo de Descripcion esta vacio");
+            TxtDescripcion.requestFocus(true);
+            TxtDescripcion.setBackground(Color.YELLOW);
+            return;
+        }
+        else {
+            TxtDescripcion.setBackground(Color.WHITE);
+        }
+        Insertar();
+        Limpiar();
+        Traer();
+        AutoIncremento();
+        Desconectar();
+    }//GEN-LAST:event_BtInsertaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -470,23 +416,20 @@ public class Apodo extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Apodo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Tipo_Usuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Apodo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Tipo_Usuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Apodo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Tipo_Usuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Apodo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Tipo_Usuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Apodo().setVisible(true);
+                new Tipo_Usuario().setVisible(true);
             }
         });
     }
@@ -497,15 +440,10 @@ public class Apodo extends javax.swing.JFrame {
     private javax.swing.JButton BtInserta;
     private javax.swing.JButton BtMenu;
     private javax.swing.JTable Table1;
-    private javax.swing.JTable Table2;
-    private javax.swing.JTextField TxtBusca;
     private javax.swing.JTextField TxtDescripcion;
     private javax.swing.JTextField TxtId;
-    private javax.swing.JButton btBuscar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
 }

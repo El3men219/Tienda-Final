@@ -14,8 +14,8 @@ public class Conexion {
     private static Connection conn;
     private static final String driver ="com.mysql.jdbc.Driver";
     private static final String user = "root";
-    private static final String password= "12345678";
-    private static final String url="jdbc:mysql://localhost:3306/taller_p";
+    private static final String password= "";
+    private static final String url="jdbc:mysql://localhost:3306/taller2.1";
 
     public Conexion() {
         conn = null;
