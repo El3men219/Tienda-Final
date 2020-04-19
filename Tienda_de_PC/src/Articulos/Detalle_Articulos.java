@@ -1,9 +1,9 @@
 
 package Articulos;
 
-import Armado.*;
 import Mantenimientos.*;
 import Libre.Conexion;
+import Libre.Menu;
 import java.awt.Color;
 import java.awt.HeadlessException;
 import java.sql.Connection;
@@ -307,6 +307,7 @@ public class Detalle_Articulos extends javax.swing.JFrame {
         TxtCosto = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel1.setText("Id: ");
@@ -353,6 +354,11 @@ public class Detalle_Articulos extends javax.swing.JFrame {
         });
 
         BtMenu.setText("Menu");
+        BtMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtMenuActionPerformed(evt);
+            }
+        });
 
         Table1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -626,6 +632,12 @@ public class Detalle_Articulos extends javax.swing.JFrame {
     private void TxtDescripcionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtDescripcionKeyReleased
            FiltradorMarca(TxtDescripcion.getText());      
     }//GEN-LAST:event_TxtDescripcionKeyReleased
+
+    private void BtMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtMenuActionPerformed
+       Menu sc=new Menu();
+        sc.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_BtMenuActionPerformed
 
     /**
      * @param args the command line arguments

@@ -3,6 +3,7 @@ package Articulos;
 
 import Mantenimientos.ArticulosDetalle;
 import Libre.Conexion;
+import Libre.Menu;
 import java.awt.Color;
 import java.awt.HeadlessException;
 import java.sql.Connection;
@@ -306,6 +307,7 @@ public class Articulo extends javax.swing.JFrame {
         BtInserta1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setUndecorated(true);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel1.setText("Id: ");
@@ -346,6 +348,11 @@ public class Articulo extends javax.swing.JFrame {
         });
 
         BtMenu.setText("Menu");
+        BtMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtMenuActionPerformed(evt);
+            }
+        });
 
         Table1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -572,6 +579,12 @@ public class Articulo extends javax.swing.JFrame {
        windows.setVisible(true);
        windows.setLocationRelativeTo(null);
     }//GEN-LAST:event_BtInserta1ActionPerformed
+
+    private void BtMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtMenuActionPerformed
+       Menu sc=new Menu();
+        sc.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_BtMenuActionPerformed
 
     /**
      * @param args the command line arguments

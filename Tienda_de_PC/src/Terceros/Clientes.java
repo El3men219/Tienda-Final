@@ -3,6 +3,7 @@ package Terceros;
 
 import Mantenimientos.*;
 import Libre.Conexion;
+import Libre.Menu;
 import java.awt.Color;
 import java.awt.HeadlessException;
 import java.sql.Connection;
@@ -546,8 +547,11 @@ public class Clientes extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         ComboNacionalidad = new javax.swing.JComboBox<>();
         BtInserta1 = new javax.swing.JButton();
+        jLabel12 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel1.setText("Id: ");
@@ -594,6 +598,11 @@ public class Clientes extends javax.swing.JFrame {
         });
 
         BtMenu.setText("Menu");
+        BtMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtMenuActionPerformed(evt);
+            }
+        });
 
         Table1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -684,6 +693,8 @@ public class Clientes extends javax.swing.JFrame {
             }
         });
 
+        jLabel12.setText("Registro de Cliente ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -760,13 +771,20 @@ public class Clientes extends javax.swing.JFrame {
                                 .addGap(29, 29, 29)
                                 .addComponent(jLabel10)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(ComboNacionalidad, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(ComboNacionalidad, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSeparator1)))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel12)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -936,6 +954,12 @@ public class Clientes extends javax.swing.JFrame {
         Limpiar();
     }//GEN-LAST:event_BtInserta1ActionPerformed
 
+    private void BtMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtMenuActionPerformed
+        Menu sc=new Menu();
+        sc.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_BtMenuActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1007,6 +1031,7 @@ public class Clientes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1016,5 +1041,6 @@ public class Clientes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }
