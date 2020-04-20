@@ -31,6 +31,7 @@ public class Empleado extends javax.swing.JFrame {
         TraerTipo();
         TraerTandas();
         TraerEstado();
+        llenarTabla();
     }
     
     Conexion con;
